@@ -5,204 +5,601 @@
   "data": {
     "nodes": [
       {
-        "id": "chatInput",
+        "id": "ChatInput-UsdQr",
         "type": "genericNode",
         "position": { "x": 50, "y": 300 },
         "data": {
+          "id": "ChatInput-UsdQr",
           "type": "ChatInput",
           "node": {
             "template": {
+              "_type": "CustomComponent",
               "input_value": {
-                "value": "",
                 "type": "str",
-                "display_name": "사용자 질문"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "사용자 질문",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               }
             },
             "display_name": "Chat Input",
-            "description": "사용자 입력"
+            "description": "사용자 입력",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "entityExtractor",
+        "id": "Prompt-Ab3Cd",
         "type": "genericNode",
         "position": { "x": 350, "y": 200 },
         "data": {
+          "id": "Prompt-Ab3Cd",
           "type": "Prompt",
           "node": {
             "template": {
+              "_type": "CustomComponent",
               "template": {
+                "type": "prompt",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
                 "value": "너는 반도체 제조 시스템 어시스턴트야.\n사용자 질문에서 아래 정보를 추출해서 반드시 JSON만 반환해. 설명 없이 JSON만.\n\n추출 항목:\n- type: \"lot\" 또는 \"eqp\" (둘 다 없으면 \"unknown\")\n- id: 추출한 ID 값 (없으면 null)\n- intent: 질문 의도 (\"status\" / \"history\" / \"alarm\" / \"location\" / \"yield\" / \"other\")\n\n예시:\n입력: \"LOT-20240101 지금 어느 공정이야?\"\n출력: {\"type\": \"lot\", \"id\": \"LOT-20240101\", \"intent\": \"location\"}\n\n사용자 질문: {user_input}",
-                "type": "prompt"
+                "password": false,
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
+              },
+              "user_input": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "user_input",
+                "display_name": "user_input",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
               }
             },
             "display_name": "Entity Extractor Prompt",
-            "description": "lot_id / eqp_id 추출 프롬프트"
+            "description": "lot_id / eqp_id 추출 프롬프트",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "llmExtract",
+        "id": "OpenAI-Ef5Gh",
         "type": "genericNode",
         "position": { "x": 650, "y": 100 },
         "data": {
-          "type": "OpenAIModel",
+          "id": "OpenAI-Ef5Gh",
+          "type": "OpenAI",
           "node": {
             "template": {
-              "openai_api_base": {
-                "value": "http://YOUR-INTERNAL-LLM-HOST/v1",
+              "_type": "CustomComponent",
+              "input_value": {
                 "type": "str",
-                "display_name": "Base URL (사내 LLM 엔드포인트)"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              },
+              "openai_api_base": {
+                "type": "str",
+                "required": false,
+                "placeholder": "http://YOUR-INTERNAL-LLM-HOST/v1",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "http://YOUR-INTERNAL-LLM-HOST/v1",
+                "password": false,
+                "name": "openai_api_base",
+                "display_name": "Base URL (사내 LLM 엔드포인트)",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "openai_api_key": {
-                "value": "YOUR-API-KEY",
                 "type": "str",
-                "display_name": "API Key"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "YOUR-API-KEY",
+                "password": true,
+                "name": "openai_api_key",
+                "display_name": "API Key",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "model_name": {
-                "value": "gpt-oss-120b",
                 "type": "str",
-                "display_name": "Model Name"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "gpt-oss-120b",
+                "password": false,
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "temperature": {
-                "value": 0,
                 "type": "float",
-                "display_name": "Temperature (추출은 0 권장)"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 0,
+                "password": false,
+                "name": "temperature",
+                "display_name": "Temperature (추출은 0 권장)",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               }
             },
             "display_name": "LLM - Entity Extract",
-            "description": "Entity 추출용 LLM (temperature=0)"
+            "description": "Entity 추출용 LLM (temperature=0)",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "apiCaller",
+        "id": "PythonFunction-Ij7Kl",
         "type": "genericNode",
         "position": { "x": 950, "y": 300 },
         "data": {
+          "id": "PythonFunction-Ij7Kl",
           "type": "PythonFunction",
           "node": {
             "template": {
+              "_type": "CustomComponent",
+              "llm_output": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "llm_output",
+                "display_name": "llm_output",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              },
               "code": {
-                "value": "import json\nimport re\nimport requests\n\ndef call_api(llm_output: str) -> str:\n    \"\"\"\n    LLM 출력(JSON 문자열)을 파싱해서 사내 API를 호출한다.\n    실제 사내 API URL로 교체 필요.\n    \"\"\"\n    # JSON 파싱 (LLM이 ```json 으로 감쌀 수 있으므로 방어 처리)\n    raw = llm_output.strip()\n    match = re.search(r'\\{.*\\}', raw, re.DOTALL)\n    if not match:\n        return json.dumps({\"error\": \"ID를 추출할 수 없습니다\"}, ensure_ascii=False)\n\n    entity = json.loads(match.group())\n    id_type = entity.get(\"type\", \"unknown\")\n    id_value = entity.get(\"id\")\n    intent = entity.get(\"intent\", \"status\")\n\n    if id_type == \"unknown\" or not id_value:\n        return json.dumps({\"error\": \"lot_id 또는 eqp_id를 찾을 수 없습니다\"}, ensure_ascii=False)\n\n    # ── 사내 API 호출 (아래 URL을 실제 API로 교체) ──────────────────\n    # 예시: response = requests.get(\n    #     f\"http://mes-api.internal/{id_type}/{id_value}/{intent}\",\n    #     headers={\"Authorization\": \"Bearer YOUR-MES-KEY\"},\n    #     timeout=10\n    # )\n    # api_data = response.json()\n    # ────────────────────────────────────────────────────────────────\n\n    # Mock 데이터 (API 연동 전 테스트용)\n    mock = {\n        \"lot\": {\n            \"LOT-20240101\": {\n                \"status\":   {\"stage\": \"CVD\", \"equipment\": \"CVD-03\", \"progress\": \"85%\"},\n                \"location\": {\"fab\": \"FAB-2\", \"bay\": \"BAY-3\", \"equipment\": \"CVD-03\"},\n                \"alarm\":    {\"count\": 0, \"last\": None},\n                \"history\":  {\"steps_done\": [\"DIFF\", \"OXIDE\", \"CVD\"], \"current\": \"CVD\"},\n                \"yield\":    {\"target\": \"98%\", \"current\": \"97.2%\"},\n            }\n        },\n        \"eqp\": {\n            \"CVD-03\": {\n                \"status\":   {\"state\": \"RUN\", \"recipe\": \"CVD_OXIDE_V3\", \"wafer_count\": 25},\n                \"alarm\":    {\"count\": 3, \"last\": \"2024-04-01 14:32\", \"code\": \"TEMP_HIGH\"},\n                \"history\":  {\"last_pm\": \"2024-03-15\", \"total_run\": 1423},\n                \"location\": {\"fab\": \"FAB-2\", \"bay\": \"BAY-3\", \"chamber\": \"CH-A\"},\n                \"yield\":    {\"avg_yield\": \"96.8%\", \"period\": \"최근 30일\"},\n            }\n        },\n    }\n\n    api_data = mock.get(id_type, {}).get(id_value, {}).get(intent, {\"message\": \"데이터 없음\"})\n\n    result = {\n        \"type\": id_type,\n        \"id\": id_value,\n        \"intent\": intent,\n        \"data\": api_data,\n    }\n    return json.dumps(result, ensure_ascii=False, indent=2)\n",
                 "type": "code",
-                "display_name": "API Caller (사내 API 연동 코드)"
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "import json\nimport re\nimport requests\n\ndef call_api(llm_output: str) -> str:\n    \"\"\"\n    LLM 출력(JSON 문자열)을 파싱해서 사내 API를 호출한다.\n    실제 사내 API URL로 교체 필요.\n    \"\"\"\n    # JSON 파싱 (LLM이 ```json 으로 감쌀 수 있으므로 방어 처리)\n    raw = llm_output.strip()\n    match = re.search(r'\\{.*\\}', raw, re.DOTALL)\n    if not match:\n        return json.dumps({\"error\": \"ID를 추출할 수 없습니다\"}, ensure_ascii=False)\n\n    entity = json.loads(match.group())\n    id_type = entity.get(\"type\", \"unknown\")\n    id_value = entity.get(\"id\")\n    intent = entity.get(\"intent\", \"status\")\n\n    if id_type == \"unknown\" or not id_value:\n        return json.dumps({\"error\": \"lot_id 또는 eqp_id를 찾을 수 없습니다\"}, ensure_ascii=False)\n\n    # ── 사내 API 호출 (아래 URL을 실제 API로 교체) ──────────────────\n    # 예시: response = requests.get(\n    #     f\"http://mes-api.internal/{id_type}/{id_value}/{intent}\",\n    #     headers={\"Authorization\": \"Bearer YOUR-MES-KEY\"},\n    #     timeout=10\n    # )\n    # api_data = response.json()\n    # ────────────────────────────────────────────────────────────────\n\n    # Mock 데이터 (API 연동 전 테스트용)\n    mock = {\n        \"lot\": {\n            \"LOT-20240101\": {\n                \"status\":   {\"stage\": \"CVD\", \"equipment\": \"CVD-03\", \"progress\": \"85%\"},\n                \"location\": {\"fab\": \"FAB-2\", \"bay\": \"BAY-3\", \"equipment\": \"CVD-03\"},\n                \"alarm\":    {\"count\": 0, \"last\": None},\n                \"history\":  {\"steps_done\": [\"DIFF\", \"OXIDE\", \"CVD\"], \"current\": \"CVD\"},\n                \"yield\":    {\"target\": \"98%\", \"current\": \"97.2%\"},\n            }\n        },\n        \"eqp\": {\n            \"CVD-03\": {\n                \"status\":   {\"state\": \"RUN\", \"recipe\": \"CVD_OXIDE_V3\", \"wafer_count\": 25},\n                \"alarm\":    {\"count\": 3, \"last\": \"2024-04-01 14:32\", \"code\": \"TEMP_HIGH\"},\n                \"history\":  {\"last_pm\": \"2024-03-15\", \"total_run\": 1423},\n                \"location\": {\"fab\": \"FAB-2\", \"bay\": \"BAY-3\", \"chamber\": \"CH-A\"},\n                \"yield\":    {\"avg_yield\": \"96.8%\", \"period\": \"최근 30일\"},\n            }\n        },\n    }\n\n    api_data = mock.get(id_type, {}).get(id_value, {}).get(intent, {\"message\": \"데이터 없음\"})\n\n    result = {\n        \"type\": id_type,\n        \"id\": id_value,\n        \"intent\": intent,\n        \"data\": api_data,\n    }\n    return json.dumps(result, ensure_ascii=False, indent=2)\n",
+                "password": false,
+                "name": "code",
+                "display_name": "API Caller (사내 API 연동 코드)",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               }
             },
             "display_name": "API Caller",
-            "description": "LLM 추출 결과를 기반으로 사내 API 호출"
+            "description": "LLM 추출 결과를 기반으로 사내 API 호출",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "answerPrompt",
+        "id": "Prompt-Mn9Op",
         "type": "genericNode",
         "position": { "x": 1250, "y": 300 },
         "data": {
+          "id": "Prompt-Mn9Op",
           "type": "Prompt",
           "node": {
             "template": {
+              "_type": "CustomComponent",
               "template": {
+                "type": "prompt",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
                 "value": "너는 반도체 제조 현장의 친절한 MES 어시스턴트야.\n아래 데이터를 바탕으로 사용자 질문에 한국어로 간결하게 답변해줘.\n\n사용자 질문: {user_input}\n조회 결과: {api_result}\n\n- 핵심 정보를 먼저 말하고, 필요 시 세부 사항을 덧붙여줘.\n- 데이터가 없으면 '해당 정보를 찾을 수 없습니다'라고 안내해줘.",
-                "type": "prompt"
+                "password": false,
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
+              },
+              "user_input": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "user_input",
+                "display_name": "user_input",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              },
+              "api_result": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "api_result",
+                "display_name": "api_result",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
               }
             },
             "display_name": "Answer Generator Prompt",
-            "description": "API 결과를 자연어로 변환하는 프롬프트"
+            "description": "API 결과를 자연어로 변환하는 프롬프트",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "llmAnswer",
+        "id": "OpenAI-Qr1St",
         "type": "genericNode",
         "position": { "x": 1550, "y": 200 },
         "data": {
-          "type": "OpenAIModel",
+          "id": "OpenAI-Qr1St",
+          "type": "OpenAI",
           "node": {
             "template": {
-              "openai_api_base": {
-                "value": "http://YOUR-INTERNAL-LLM-HOST/v1",
+              "_type": "CustomComponent",
+              "input_value": {
                 "type": "str",
-                "display_name": "Base URL (사내 LLM 엔드포인트)"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              },
+              "openai_api_base": {
+                "type": "str",
+                "required": false,
+                "placeholder": "http://YOUR-INTERNAL-LLM-HOST/v1",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "http://YOUR-INTERNAL-LLM-HOST/v1",
+                "password": false,
+                "name": "openai_api_base",
+                "display_name": "Base URL (사내 LLM 엔드포인트)",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "openai_api_key": {
-                "value": "YOUR-API-KEY",
                 "type": "str",
-                "display_name": "API Key"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "YOUR-API-KEY",
+                "password": true,
+                "name": "openai_api_key",
+                "display_name": "API Key",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "model_name": {
-                "value": "gpt-oss-120b",
                 "type": "str",
-                "display_name": "Model Name"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": "gpt-oss-120b",
+                "password": false,
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               },
               "temperature": {
-                "value": 0.3,
                 "type": "float",
-                "display_name": "Temperature (답변은 0.3 권장)"
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": false,
+                "value": 0.3,
+                "password": false,
+                "name": "temperature",
+                "display_name": "Temperature (답변은 0.3 권장)",
+                "advanced": false,
+                "dynamic": false,
+                "info": ""
               }
             },
             "display_name": "LLM - Answer",
-            "description": "자연어 답변 생성용 LLM"
+            "description": "자연어 답변 생성용 LLM",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       },
       {
-        "id": "chatOutput",
+        "id": "ChatOutput-Uv3Wx",
         "type": "genericNode",
         "position": { "x": 1850, "y": 300 },
         "data": {
+          "id": "ChatOutput-Uv3Wx",
           "type": "ChatOutput",
           "node": {
-            "template": {},
+            "template": {
+              "_type": "CustomComponent",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "입력 메시지",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              }
+            },
             "display_name": "Chat Output",
-            "description": "최종 답변 출력"
+            "description": "최종 답변 출력",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
           }
         }
       }
     ],
     "edges": [
       {
-        "source": "chatInput",
-        "target": "entityExtractor",
-        "sourceHandle": "message",
-        "targetHandle": "user_input"
+        "source": "ChatInput-UsdQr",
+        "sourceHandle": "{\"dataType\": \"ChatInput\", \"id\": \"ChatInput-UsdQr\", \"name\": \"message\", \"output_types\": [\"Message\"]}",
+        "target": "Prompt-Ab3Cd",
+        "targetHandle": "{\"fieldName\": \"user_input\", \"id\": \"Prompt-Ab3Cd\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-UsdQr",
+            "name": "message",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "user_input",
+            "id": "Prompt-Ab3Cd",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__ChatInput-UsdQrmessage-Prompt-Ab3Cduser_input",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "entityExtractor",
-        "target": "llmExtract",
-        "sourceHandle": "prompt",
-        "targetHandle": "input_value"
+        "source": "Prompt-Ab3Cd",
+        "sourceHandle": "{\"dataType\": \"Prompt\", \"id\": \"Prompt-Ab3Cd\", \"name\": \"prompt\", \"output_types\": [\"Message\"]}",
+        "target": "OpenAI-Ef5Gh",
+        "targetHandle": "{\"fieldName\": \"input_value\", \"id\": \"OpenAI-Ef5Gh\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "id": "Prompt-Ab3Cd",
+            "name": "prompt",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "OpenAI-Ef5Gh",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__Prompt-Ab3Cdprompt-OpenAI-Ef5Ghinput_value",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "llmExtract",
-        "target": "apiCaller",
-        "sourceHandle": "text",
-        "targetHandle": "llm_output"
+        "source": "OpenAI-Ef5Gh",
+        "sourceHandle": "{\"dataType\": \"OpenAI\", \"id\": \"OpenAI-Ef5Gh\", \"name\": \"text\", \"output_types\": [\"Message\"]}",
+        "target": "PythonFunction-Ij7Kl",
+        "targetHandle": "{\"fieldName\": \"llm_output\", \"id\": \"PythonFunction-Ij7Kl\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "OpenAI",
+            "id": "OpenAI-Ef5Gh",
+            "name": "text",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "llm_output",
+            "id": "PythonFunction-Ij7Kl",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__OpenAI-Ef5Ghtext-PythonFunction-Ij7Klllm_output",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "apiCaller",
-        "target": "answerPrompt",
-        "sourceHandle": "output",
-        "targetHandle": "api_result"
+        "source": "PythonFunction-Ij7Kl",
+        "sourceHandle": "{\"dataType\": \"PythonFunction\", \"id\": \"PythonFunction-Ij7Kl\", \"name\": \"output\", \"output_types\": [\"Message\"]}",
+        "target": "Prompt-Mn9Op",
+        "targetHandle": "{\"fieldName\": \"api_result\", \"id\": \"Prompt-Mn9Op\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "PythonFunction",
+            "id": "PythonFunction-Ij7Kl",
+            "name": "output",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "api_result",
+            "id": "Prompt-Mn9Op",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__PythonFunction-Ij7Kloutput-Prompt-Mn9Opapi_result",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "chatInput",
-        "target": "answerPrompt",
-        "sourceHandle": "message",
-        "targetHandle": "user_input"
+        "source": "ChatInput-UsdQr",
+        "sourceHandle": "{\"dataType\": \"ChatInput\", \"id\": \"ChatInput-UsdQr\", \"name\": \"message\", \"output_types\": [\"Message\"]}",
+        "target": "Prompt-Mn9Op",
+        "targetHandle": "{\"fieldName\": \"user_input\", \"id\": \"Prompt-Mn9Op\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-UsdQr",
+            "name": "message",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "user_input",
+            "id": "Prompt-Mn9Op",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__ChatInput-UsdQrmessage-Prompt-Mn9Opuser_input",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "answerPrompt",
-        "target": "llmAnswer",
-        "sourceHandle": "prompt",
-        "targetHandle": "input_value"
+        "source": "Prompt-Mn9Op",
+        "sourceHandle": "{\"dataType\": \"Prompt\", \"id\": \"Prompt-Mn9Op\", \"name\": \"prompt\", \"output_types\": [\"Message\"]}",
+        "target": "OpenAI-Qr1St",
+        "targetHandle": "{\"fieldName\": \"input_value\", \"id\": \"OpenAI-Qr1St\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "id": "Prompt-Mn9Op",
+            "name": "prompt",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "OpenAI-Qr1St",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__Prompt-Mn9Opprompt-OpenAI-Qr1Stinput_value",
+        "animated": false,
+        "className": ""
       },
       {
-        "source": "llmAnswer",
-        "target": "chatOutput",
-        "sourceHandle": "text",
-        "targetHandle": "input_value"
+        "source": "OpenAI-Qr1St",
+        "sourceHandle": "{\"dataType\": \"OpenAI\", \"id\": \"OpenAI-Qr1St\", \"name\": \"text\", \"output_types\": [\"Message\"]}",
+        "target": "ChatOutput-Uv3Wx",
+        "targetHandle": "{\"fieldName\": \"input_value\", \"id\": \"ChatOutput-Uv3Wx\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "OpenAI",
+            "id": "OpenAI-Qr1St",
+            "name": "text",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "ChatOutput-Uv3Wx",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__OpenAI-Qr1Sttext-ChatOutput-Uv3Wxinput_value",
+        "animated": false,
+        "className": ""
       }
-    ]
+    ],
+    "viewport": { "x": 0, "y": 0, "zoom": 0.5 }
   }
 }
