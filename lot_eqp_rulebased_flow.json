@@ -1,0 +1,180 @@
+{
+  "id": "lot-eqp-rulebased-flow-v2",
+  "name": "Lot / Eqp Fast Query (Rule-based, No LLM)",
+  "description": "LLM 없이 regex 규칙으로 lot_id/eqp_id 를 판별하고 사내 API 를 직접 호출합니다. 속도 최우선.",
+  "data": {
+    "nodes": [
+      {
+        "id": "ChatInput-RB001",
+        "type": "genericNode",
+        "position": { "x": 50, "y": 300 },
+        "data": {
+          "id": "ChatInput-RB001",
+          "type": "ChatInput",
+          "node": {
+            "template": {
+              "_type": "CustomComponent",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "placeholder": "예) 5QQ5847 어느 step? / CMPS04호기 상태는?",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "사용자 질문",
+                "advanced": false,
+                "dynamic": false,
+                "info": "lot_id (예: 5QQ5847) 또는 eqp_id (예: CMPS04호기) 를 포함하여 입력하세요"
+              }
+            },
+            "display_name": "Chat Input",
+            "description": "사용자 질문 입력",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
+          }
+        }
+      },
+      {
+        "id": "CustomComponent-RB002",
+        "type": "genericNode",
+        "position": { "x": 550, "y": 300 },
+        "data": {
+          "id": "CustomComponent-RB002",
+          "type": "CustomComponent",
+          "node": {
+            "template": {
+              "_type": "CustomComponent",
+              "input_text": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_text",
+                "display_name": "input_text",
+                "advanced": false,
+                "dynamic": false,
+                "info": "ChatInput 으로부터 사용자 질문을 받습니다",
+                "input_types": ["Message"]
+              },
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.custom import CustomComponent\n\n\nclass LotEqpRulebasedQuery(CustomComponent):\n    display_name = \"Lot/Eqp Rule-based Classifier\"\n    description = \"LLM 없이 regex 로 lot_id/eqp_id 구분 후 API 직접 호출\"\n\n    def build_config(self):\n        return {\n            \"input_text\": {\n                \"display_name\": \"Input Text\",\n                \"input_types\": [\"Message\"],\n            }\n        }\n\n    def build(self, input_text: str) -> str:\n        import re\n        import json\n        import requests\n\n        text = str(input_text).strip()\n\n        # ── API 설정 (실제 사내 API 로 교체하세요) ──────────────────────\n        LOT_API = \"http://YOUR-MES-API/api/lot/{lot_id}\"\n        EQP_API = \"http://YOUR-MES-API/api/eqp/{eqp_id}\"\n        HEADERS = {\n            \"Authorization\": \"Bearer YOUR-API-TOKEN\",\n            \"Content-Type\": \"application/json\",\n        }\n        TIMEOUT = 5\n        # ───────────────────────────────────────────────────────────────\n\n        def call(url):\n            try:\n                resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)\n                resp.raise_for_status()\n                return json.dumps(resp.json(), ensure_ascii=False, indent=2)\n            except requests.exceptions.Timeout:\n                return \"API 응답 시간 초과\"\n            except requests.exceptions.ConnectionError:\n                return \"API 서버에 연결할 수 없습니다\"\n            except requests.exceptions.HTTPError as e:\n                return f\"HTTP {e.response.status_code}\"\n            except Exception as e:\n                return f\"오류: {str(e)}\"\n\n        # Rule 1: eqp_id - '호기' 접미사 패턴 (예: CMPS04호기)\n        eqp_match = re.search(r'([A-Z][A-Z0-9]*\\d+호기)', text, re.UNICODE)\n        if eqp_match:\n            eqp_id = eqp_match.group(1)\n            url = EQP_API.replace(\"{eqp_id}\", eqp_id)\n            return f\"[Equipment ID: {eqp_id}]\\n{call(url)}\"\n\n        # Rule 2: lot_id - 한글 제거 후 영문+숫자 혼합 5~10자 (예: 5QQ5847)\n        clean = re.sub(r'[가-힣\\s]+', ' ', text).upper().strip()\n        for candidate in re.findall(r'\\b([A-Z0-9]{5,10})\\b', clean):\n            if re.search(r'[A-Z]', candidate) and re.search(r'[0-9]', candidate):\n                url = LOT_API.replace(\"{lot_id}\", candidate)\n                return f\"[Lot ID: {candidate}]\\n{call(url)}\"\n\n        return (\n            \"⚠️ Lot ID 또는 Equipment ID 를 인식할 수 없습니다.\\n\\n\"\n            \"입력 예시:\\n\"\n            \"  · Lot : 5QQ5847 이 지금 어느 step 에 있지?\\n\"\n            \"  · Eqp : CMPS04호기가 지금 다운 상태인가?\"\n        )\n",
+                "password": false,
+                "name": "code",
+                "display_name": "Rule-based Classifier + API Caller",
+                "advanced": false,
+                "dynamic": false,
+                "info": "LLM 없이 regex 로 lot/eqp 를 구분하고 사내 API 를 직접 호출합니다"
+              }
+            },
+            "display_name": "Lot/Eqp Rule-based Classifier",
+            "description": "LLM 없이 regex 로 lot_id/eqp_id 구분 후 API 직접 호출 (속도 최우선)",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-RB003",
+        "type": "genericNode",
+        "position": { "x": 1050, "y": 300 },
+        "data": {
+          "id": "ChatOutput-RB003",
+          "type": "ChatOutput",
+          "node": {
+            "template": {
+              "_type": "CustomComponent",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "password": false,
+                "name": "input_value",
+                "display_name": "API 조회 결과",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "input_types": ["Message"]
+              }
+            },
+            "display_name": "Chat Output",
+            "description": "API 조회 결과 출력",
+            "base_classes": ["Message"],
+            "output_types": ["Message"],
+            "documentation": "",
+            "custom_fields": {}
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "xy-edge__ChatInput-RB001message-CustomComponent-RB002input_text",
+        "source": "ChatInput-RB001",
+        "sourceHandle": "{\"dataType\": \"ChatInput\", \"id\": \"ChatInput-RB001\", \"name\": \"message\", \"output_types\": [\"Message\"]}",
+        "target": "CustomComponent-RB002",
+        "targetHandle": "{\"fieldName\": \"input_text\", \"id\": \"CustomComponent-RB002\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-RB001",
+            "name": "message",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "input_text",
+            "id": "CustomComponent-RB002",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "animated": false,
+        "className": ""
+      },
+      {
+        "id": "xy-edge__CustomComponent-RB002output-ChatOutput-RB003input_value",
+        "source": "CustomComponent-RB002",
+        "sourceHandle": "{\"dataType\": \"CustomComponent\", \"id\": \"CustomComponent-RB002\", \"name\": \"output\", \"output_types\": [\"Message\"]}",
+        "target": "ChatOutput-RB003",
+        "targetHandle": "{\"fieldName\": \"input_value\", \"id\": \"ChatOutput-RB003\", \"inputTypes\": [\"Message\"], \"type\": \"str\"}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "CustomComponent",
+            "id": "CustomComponent-RB002",
+            "name": "output",
+            "output_types": ["Message"]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "ChatOutput-RB003",
+            "inputTypes": ["Message"],
+            "type": "str"
+          }
+        },
+        "animated": false,
+        "className": ""
+      }
+    ],
+    "viewport": { "x": 0, "y": 0, "zoom": 0.8 }
+  }
+}
